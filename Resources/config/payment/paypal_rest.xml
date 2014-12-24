@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="payum.paypal.rest.api.class">PayPal\Rest\ApiContext</parameter>
+        <parameter key="payum.paypal.rest.api.factory.class">Payum\Bundle\PayumBundle\Factory\PaypalRestPaymentFactory</parameter>
+        <parameter key="payum.paypal.rest.action.capture.class">Payum\Paypal\Rest\Action\CaptureAction</parameter>
+        <parameter key="payum.paypal.rest.action.sync.class">Payum\Paypal\Rest\Action\SyncAction</parameter>
+        <parameter key="payum.paypal.rest.action.status.class">Payum\Paypal\Rest\Action\StatusAction</parameter>
+    </parameters>
+
+    <services>
+        <service
+            id="payum.paypal.rest.api.factory"
+            class="%payum.paypal.rest.api.factory.class%"
+        >
+            <argument type="collection">
+                <!-- It is template service. The real service will be created by PaypalRestPaymentFactory -->
+            </argument>
+        </service>
+
+        <service
+            id="payum.paypal.rest.api.prototype"
+            class="%payum.paypal.rest.api.class%"
+            abstract="true"
+            public="false"
+        >
+            <factory service="payum.paypal.rest.api.factory" method="create"/>
+        </service>
+
+        <service
+            id="payum.paypal.rest.action.capture"
+            class="%payum.paypal.rest.action.capture.class%"
+            public="false"
+        >
+            <tag name="payum.action" factory="paypal_rest" />
+        </service>
+
+        <service
+            id="payum.paypal.rest.action.sync"
+            class="%payum.paypal.rest.action.sync.class%"
+            public="false"
+        >
+            <tag name="payum.action" factory="paypal_rest" />
+        </service>
+
+        <service
+            id="payum.paypal.rest.action.status"
+            class="%payum.paypal.rest.action.status.class%"
+            public="false"
+        >
+            <tag name="payum.action" factory="paypal_rest" />
+        </service>
+    </services>
+</container>
