@@ -44,7 +44,7 @@ class OmnipayPaymentFactory extends AbstractPaymentFactory
     public function addConfiguration(ArrayNodeDefinition $builder)
     {
         parent::addConfiguration($builder);
-        
+
         $builder->children()
             ->scalarNode('type')->isRequired()->cannotBeEmpty()->end()
             ->arrayNode('options')->isRequired()
@@ -52,7 +52,7 @@ class OmnipayPaymentFactory extends AbstractPaymentFactory
                 ->prototype('scalar')->end()
             ->end()
         ->end();
-        
+
         $builder
             ->validate()
             ->ifTrue(function($v) {
@@ -60,14 +60,14 @@ class OmnipayPaymentFactory extends AbstractPaymentFactory
                 $gatewayFactory->find();
 
                 $supportedTypes = $gatewayFactory->all();
-                if (false == in_array($v['type'], $supportedTypes)) {
+                if (false == in_array($v['type'], $supportedTypes) && !class_exists($v['type'])) {
                     throw new LogicException(sprintf(
                         'Given type %s is not supported. Try one of supported types: %s.',
                         $v['type'],
                         implode(', ', $supportedTypes)
                     ));
                 }
-                
+
                 return false;
             })
             ->thenInvalid('A message')
